@@ -2,10 +2,10 @@ import http.server
 import http.client
 import socketserver
 import termcolor
-from ensembl_info import speciesnames, get_karyotype, get_chlength
+from ensembl_info import speciesnames, get_karyotype, get_chlength, get_geneid, get_geneSeq, get_geneInfo, get_names
+from Seq_calc import Seq
 
-
-PORT = 8088                     #CHANGE PROT CHANGE PORT TO 8000
+PORT = 8000                      # CHANGE PROT CHANGE PORT TO 8000
 
 HOSTNAME = 'rest.ensembl.org'
 ENDPOINTS = ['/info/species', '/info/assembly']
@@ -44,16 +44,16 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         elif path.startswith("/listSpecies"):
             f = open('output.html', 'w')
             limit = int(pathlist[1])
-            species = speciesnames()
+            common_name, search_name = speciesnames()
             h = "List of Species"
 
             if len(pathlist) == 2:                         # AQUI HAY ALGO QUE NO CHUTA
-                species = species[:limit]
-            elif len(pathlist) == 1:
-                species = species
+                common_name = common_name[:limit]
+            else:
+                pass
 
-            for i in range(len(species)):
-                out += species[i] + "<br>"
+            for i in range(len(common_name)):
+                out += common_name[i] + "<br>"
 
             output = htmlfile.format(h, out)
 
@@ -62,7 +62,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             d = open('output.html', 'r')
             contents = d.read()
 
-        elif path.startswith("/karyotype"):
+        elif path.startswith("/karyotype"):             # I NEED TO DO SOMETHING WITH THE ERRORS
             f = open('output.html', 'w')
 
             msg = pathlist[1]
@@ -70,7 +70,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             h = "Karyotype"
 
             for i in range(len(karyotype)):
-                out += karyotype[i] + ', '              # THERE IS A FUCKING COMA I CANNOT GET RID OF
+                out += karyotype[i] + ', '              # THERE IS A FUCKING COMMA I CANNOT GET RID OF
 
             output = htmlfile.format(h, out)
 
@@ -79,15 +79,129 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             d = open('output.html', 'r')
             contents = d.read()
 
+        elif path.startswith("/chromosomeLength"):          # DONE
+            f = open('output.html', 'w')
 
+            msg1 = pathlist[1].split('&')[0]
+            msg2 = pathlist[2]
+            h = "Chromosome length"
+            common, search = speciesnames()
+            check = dict(zip(common, search))
+            if msg1 in check.values() and msg2 in get_karyotype(msg1):
+                chr_length = get_chlength(msg1, msg2)
+                out = "The length of the chromosome {} of the {} species is {}".format(msg2, msg1, chr_length)
+            else:
+                out = "Sorry, the data you introduced cannot be found in the database"
 
-        elif path.startswith("/chromosomeLength"):
-            pass
+            output = htmlfile.format(h, out)
+
+            f.write(output)
+            f.close()
+            d = open('output.html', 'r')
+            contents = d.read()
+
+        elif path.startswith("/geneSeq"):           # INTENTAR JUNTAR geneSEQ Y geneINFO PARA QUE OCUPE MENOS
+            f = open('output.html', 'w')
+            genename = pathlist[1]
+            h = "Human gene sequence"
+            id = get_geneid(genename)
+
+            if id == "Error":
+                out = "Sorry, the name of the gene you introduced is not found in our database"
+            else:
+                geneseq = get_geneSeq(id)['seq']
+                newseq = ""
+
+                # This is for the sequence to appear in multiple lines instead of in an infinite long one.
+                step = 100
+                seqlist = [geneseq[i:i+step] for i in range(0, len(geneseq), step)]
+                for x in seqlist:
+                    newseq += x + '<br>'
+
+                out = """<b>This is the DNA sequence for the gene you introduced:</b>
+                 <br><br>
+                 {}""".format(newseq)
+
+            output = htmlfile.format(h, out)
+
+            f.write(output)
+            f.close()
+            d = open('output.html', 'r')
+            contents = d.read()
+
+        elif path.startswith("/geneInfo"):              # ME FALTA PONER EL LENGTH
+            f = open('output.html', 'w')
+            genename = pathlist[1]
+            h = "Human gene information"
+            id = get_geneid(genename)
+
+            if id == "Error":
+                out = "Sorry, the name of the gene you introduced is not found in our database"
+            else:
+                geneinfo = get_geneInfo(id)
+                out = """Start: {}<br>End: {}<br>Chromosome: {}<br>Length:""".format(geneinfo['start'], geneinfo['end'], geneinfo['chromo'])
+
+            output = htmlfile.format(h, out)
+
+            f.write(output)
+            f.close()
+            d = open('output.html', 'r')
+            contents = d.read()
+
+        elif path.startswith("/geneCalc"):          # ME FALTA PONER EL LENGTH
+            f = open('output.html', 'w')
+            genename = pathlist[1]
+            h = "Human gene information"
+            id = get_geneid(genename)
+
+            if id == "Error":
+                out = "Sorry, the name of the gene you introduced is not found in our database"
+            else:
+                geneseq = get_geneSeq(id)['seq']
+                dna = Seq(geneseq)
+                d_perc = {}
+
+                for base in ['A', 'C', 'T', 'G']:
+                    d_perc.update({base: dna.perc(base)})
+                out = """The length of the sequence is {}<br><br>Base percentages
+                <ul><li>Adenine: {}%</li><li>Guanine: {}%</li>
+                <li>Thymine:{}%</li><li>Cytosine: {}%</li></ul>""".format(dna.len(), d_perc['A'], d_perc['G'], d_perc['T'], d_perc['C'])
+
+                print(len(geneseq))
+                info = get_geneInfo(id)
+                length = int(info['end']) - int(info['start'])
+                print(length)
+
+            output = htmlfile.format(h, out)
+
+            f.write(output)
+            f.close()
+            d = open('output.html', 'r')
+            contents = d.read()
+
+        elif path.startswith("/geneList"):
+            f = open('output.html', 'w')
+            chromo = pathlist[1].split('&')[0]
+            start = pathlist[2].split('&')[0]
+            end = pathlist[3]
+            h = "Names of all the genes within a specific chromosome region"
+            list_names = get_names(chromo, start, end)
+
+            if len(list_names) == 0:
+                out = "Sorry, there were no genes found in that area"
+            else:
+                out = "This is the list of gene names in that area: {}".format(list_names)
+
+            output = htmlfile.format(h, out)
+
+            f.write(output)
+            f.close()
+            d = open('output.html', 'r')
+            contents = d.read()
 
         else:
             d = open("error.html", 'r')
             contents = d.read()
-
 
         self.send_response(200)
 

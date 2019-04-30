@@ -20,13 +20,15 @@ def speciesnames():
     # -- Generate the object from the json file
     infospecies = json.loads(text_json)['species']
 
-    species = []
+    c_name = []
+    search_name = []
 
     for number in infospecies:
-        name = number['common_name']
-        species.append(name)
+        name1, name2 = number['common_name'], number['name']
+        c_name.append(name1)
+        search_name.append(name2)
 
-    return species
+    return c_name, search_name
 
 
 def get_karyotype(object):
@@ -61,3 +63,79 @@ def get_chlength(object1, object2):
         if x["name"] == object2:
             length = x["length"]
             return length
+
+def get_geneid(name):
+    conn = http.client.HTTPSConnection(HOSTNAME)
+    endpoint = "/homology/symbol/human/" + name + "?content-type=application/json"
+
+    conn.request(METHOD, endpoint, None)
+    r1 = conn.getresponse()
+
+    text_json = r1.read().decode("utf-8")
+    conn.close()
+
+    info = json.loads(text_json)
+
+    try:
+        geneid = info['data'][0]['id']
+
+    except KeyError:
+        geneid = "Error"
+
+    return geneid
+
+def get_geneSeq(id):
+    conn = http.client.HTTPSConnection(HOSTNAME)
+    endpoint = "/sequence/id/" + id + "?content-type=application/json"
+    headers = {'User-Agent': 'http-client'}
+
+    conn.request(METHOD, endpoint, None, headers)
+    r1 = conn.getresponse()
+
+    text_json = r1.read().decode("utf-8")
+    conn.close()
+
+    seq = json.loads(text_json)
+
+    """newseq = ""
+
+    step = 100
+    seqlist = [seq[i:i + step] for i in range(0, len(seq), step)]
+    for x in seqlist:
+        newseq += x + '\n'"""
+
+    return seq
+
+def get_geneInfo(id):
+    conn = http.client.HTTPSConnection(HOSTNAME)
+    endpoint = "/overlap/id/" + id + "?feature=gene;content-type=application/json"
+    headers = {'User-Agent': 'http-client'}
+
+    conn.request(METHOD, endpoint, None, headers)
+    r1 = conn.getresponse()
+
+    text_json = r1.read().decode("utf-8")
+    conn.close()
+
+    info = json.loads(text_json)
+    dd = {}
+
+    for type in info:
+        if type['id'] == id:
+            d = {'start': type['start'], 'end': type['end'], 'chromo': type['seq_region_name']}
+            dd.update(d)
+        else:
+            pass
+
+    return dd
+
+def get_names(chromo, start, end):
+    conn = http.client.HTTPSConnection(HOSTNAME)
+    endpoint = '/overlap/region/human/{}:{}-{}?feature=gene;content-type=application/json'.format(chromo, start, end)
+    headers = {'User-Agent': 'http-client'}
+
+    conn.request(METHOD, endpoint, None, headers)
+    r1 = conn.getresponse()
+
+    text_json = r1.read().decode("utf-8")
+    conn.close()

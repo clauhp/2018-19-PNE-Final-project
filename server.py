@@ -159,7 +159,8 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 out = "Sorry, the name of the gene you introduced is not found in our database"
             else:
                 geneinfo = get_geneInfo(id)
-                out = """Start: {}<br>End: {}<br>Chromosome: {}<br>Length:""".format(geneinfo['start'], geneinfo['end'], geneinfo['chromo'])
+                length = str(geneinfo["end"] - geneinfo["start"] + 1)
+                out = """Start: {}<br>End: {}<br>Chromosome: {}<br>Length: {}""".format(geneinfo['start'], geneinfo['end'], geneinfo['chromo'], length)
 
             output = htmlfile.format(h, out)
 
@@ -204,13 +205,19 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             chromo = pathlist[1].split('&')[0]
             start = pathlist[2].split('&')[0]
             end = pathlist[3]
-            h = "Names of all the genes within a specific chromosome region"
+            h = "Names of all the genes within a specific chromosome region of the human genome"
             list_names = get_names(chromo, start, end)
+            out1 = ""
 
-            if len(list_names) == 0:
-                out = "Sorry, there were no genes found in that area"
+            if type(list_names) is list:
+                if len(list_names) == 0:
+                    out = "Sorry, there were no genes found in that area"
+                else:
+                    for i in range(len(list_names)):
+                        out1 += "<li>" + list_names[i] + "</li>"
+                    out = "This is the list of gene names in that area: <ul>{}</ul>".format(out1)
             else:
-                out = "This is the list of gene names in that area: {}".format(list_names)
+                out = "There's been an error. Please make sure the parameters you introduce are valid"
 
             output = htmlfile.format(h, out)
 

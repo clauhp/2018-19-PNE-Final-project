@@ -58,11 +58,23 @@ def get_chlength(object1, object2):
     conn.close()
 
     specie = json.loads(text_json)["top_level_region"]
+    length = ''
 
-    for x in specie:
-        if x["name"] == object2:
-            length = x["length"]
-            return length
+    info = get_karyotype(object1)
+    karyotype = []
+
+    for i in range(len(info)):
+        karyotype.append(info[i])
+
+    if object2 in karyotype:
+        for x in specie:
+            if x["name"] == object2:
+                length = x["length"]
+            else:
+                pass
+        return length
+    else:
+        return 'Error'
 
 def get_geneid(name):
     conn = http.client.HTTPSConnection(HOSTNAME)
@@ -139,3 +151,13 @@ def get_names(chromo, start, end):
 
     text_json = r1.read().decode("utf-8")
     conn.close()
+    genenames = json.loads(text_json)
+
+    names = []
+
+    for gene in genenames:
+        names.append(gene['external_name'])
+
+    return names
+
+

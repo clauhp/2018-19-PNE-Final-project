@@ -1,0 +1,317 @@
+
+
+ENDPOINT = "/"
+
+
+    Input: "http://localhost:8000/"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Species info</title>
+</head>
+<body style="margin-left:50px;background-color:#D3FBF4;">
+    <h1><center>FINAL PRACTICE</center></h1>
+    <h4><center>Claudia Helena Pérez García</center></h4>
+
+    <h3>List of Species</h3>
+        <form action="listSpecies" method="get">
+          Here you'll find a list with all the species Ensembl works with.
+          <br><br>
+            <input type="number" name="limit" min="1" max="199"><input type="submit"/>
+            <br><br>
+        </form>
+    <h3>Karyotype</h3>
+        <form action="karyotype" method="get">
+          Please, enter the name of the specie you want the karyotype from.
+          <br><br>
+            <input type="text" name="specie"><input type="submit"/>
+            <br><br>
+        </form>
+    <h3>Chromosome Length</h3>
+        <form action="chromosomeLength" method="get">
+        Please, enter the species and the name of the chromosome.
+          <br><br>
+            Species:
+            <input type="text" name="specie">
+            <br><br>
+            Chromosome name:
+            <input type="text" name="chromo">
+            <br><br>
+            <input type="submit"/>
+            <br><br>
+        </form>
+    <h3>Human gene sequencer</h3>
+        <form action="geneSeq" method="get">
+          Please, enter the name of the gene from which you want its DNA sequence.
+          <br><br>
+            <input type="text" name="gene"><input type="submit"/>
+            <br><br>
+        </form>
+    <h3>Human gene information</h3>
+        <form action="geneInfo" method="get">
+          Please, enter the name of the gene from which you want its DNA sequence.
+          <br><br>
+            <input type="text" name="gene"><input type="submit"/>
+            <br><br>
+        </form>
+    <h3>Human gene calculations</h3>
+        <form action="geneCalc" method="get">
+          Please, enter the name of the gene from which you want its DNA sequence.
+          <br><br>
+            <input type="text" name="gene"><input type="submit"/>
+            <br><br>
+        </form>
+    <h3>Names of the genes </h3>
+        <form action="geneList" method="get">
+          Please, enter the chromosome, the beginning and the end of the region.
+          <br><br>
+            Chromosome
+            <input type="text" name="chromo">
+            <br><br>
+            Start
+            <input type="text" name="start">
+            <br><br>
+            End
+            <input type="text" name="end">
+            <br><br>
+            <input type="submit"/>
+        </form>
+
+    </body>
+</html>
+
+    Input: "http://localhost:8000/BiomedicalEng"
+    Output: <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>error</title>
+    </head>
+    <body style="background-color: #CD5C5C;">
+        <h1>404 ERROR</h1>
+        <a href="/">This is the link to the main page</a>
+    </body>
+</html>
+
+
+
+
+ENDPOINT = "/ListSpecies":
+    Input: "http://localhost:8000/listSpecies?limit="
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>List of Species</h1>
+  <p>house mouse<br>human<br>domestic guinea pig<br>house mouse<br>Midas cichlid<br>green anole<br>White-headed capuchin<br>ballan wrasse<br>leopard<br>torafugu<br>Black snub-nosed monkey<br>zig-zag eel<br>blue-crowned manakin<br>Damara mole rat<br>gray short-tailed opossum<br>donkey<br>southern platyfish<br>little spotted kiwi<br>ruff<br>three-spined stickleback<br>Chinese hamster<br>steppe mouse<br>Indian medaka<br>Upper Galilee mountains blind mole rat<br>Abingdon island giant tortoise<br>spiny chromis<br>Asian bonytongue<br>Tasmanian devil<br>chicken<br>coelacanth<br>helmeted guineafowl<br>house mouse<br>sailfin molly<br>koala<br>house mouse<br>Chinese hamster<br>house mouse<br>naked mole-rat<br>Spoon-billed sandpiper<br>common mallard<br>Bolivian squirrel monkey<br>Bengalese finch<br>white-tufted-ear marmoset<br>Domestic sheep<br>Olive baboon<br>Crab-eating macaque<br>mainland tiger snake<br>Goat<br>mummichog<br>American black bear<br>house mouse<br>tammar wallaby<br>bottlenosed dolphin<br>western mosquitofish<br>domestic cat<br>bonobo<br>Northern white-cheeked gibbon<br>African green monkey<br>cattle<br>clown anemonefish<br>Shrew mouse<br>Japanese quail<br>Philippine tarsier<br>Great spotted kiwi<br>Pig-tailed macaque<br>tuatara<br>pink-footed goose<br>climbing perch<br>Spotted gar<br>Golden snub-nosed monkey<br>Daurian ground squirrel<br>Amazon molly<br>turbot<br>algerian mouse<br>sea lamprey<br>western clawed frog<br>Agassiz's desert tortoise<br>American bison<br>house mouse<br>channel catfish<br>Degu<br>Angola colobus<br>golden-collared manakin<br>eastern happy<br>greater bamboo lemur<br>western european house mouse<br>nine-banded armadillo<br>mangrove rivulus<br>house mouse<br>Arctic ground squirrel<br>Western Lowland Gorilla<br>gray mouse lemur<br>Drill<br>central bearded dragon<br>American mink<br>Great Tit<br>rhesus monkey<br>platypus<br>Japanese medaka HNI<br>Inshore hagfish<br>dingo<br>zebrafish<br>house mouse<br>bicolor damselfish<br>Long-tailed chinchilla<br>house mouse<br>Mexican tetra<br>thirteen-lined ground squirrel<br>alpaca<br>Australian saltwater crocodile<br>white-throated sparrow<br>orange clownfish<br>Tiger<br>domestic turkey<br>Ugandan red Colobus<br>Alpine marmot<br>common canary<br>Okarito brown kiwi<br>Argentine black and white tegu<br>Hoffmann's two-fingered sloth<br>Ryukyu mouse<br>European shrew<br>zebra finch<br>gelada<br>tiger tail seahorse<br>Brazilian guinea pig<br>Periophthalmus magnuspinnatus<br>Ma's night monkey<br>little brown bat<br>pig<br>Coquerel's sifaka<br>fruit fly<br>Makobe Island cichlid<br>small Madagascar hedgehog<br>dark-eyed junco<br>red fox<br>chimpanzee<br>Chinese hamster<br>greater amberjack<br>western European hedgehog<br>African savanna elephant<br>lyretail cichlid<br>Chinese softshell turtle<br>vole<br>ocean sunfish<br>Polar bear<br>emu<br>rabbit<br>Monterrey platyfish<br>sheepshead minnow<br>Sea squirt Ciona intestinalis<br>red-bellied piranha<br>northern pike<br>American pika<br>Domestic ferret<br>Sea squirt Ciona savignyi<br>Mongolian gerbil<br>Paramormyrops kingsleyae<br>Lesser Egyptian jerboa<br>Ord's kangaroo rat<br>Sooty mangabey<br>Nile tilapia<br>Bornean orangutan<br>Western painted turtle<br>zebra mbuna<br>horse<br>Golden Hamster<br>large flying fox<br>yellowtail amberjack<br>blue tit<br>eastern european house mouse<br>Atlantic cod<br>Burton's mouthbrooder<br>baker's yeast<br>tongue sole<br>dog<br>swamp eel<br>giant panda<br>American beaver<br>Budgie<br>Northern American deer mouse<br>Collared flycatcher<br>wild yak<br>house mouse<br>south eastern house mouse<br>Norway rat<br>small-eared galago<br>naked mole-rat<br>C.elegans<br>guppy<br>Japanese medaka HSOK<br>spotted green pufferfish<br>birds<br>northern tree shrew<br>house mouse<br>shortfin molly<br>Japanese medaka HdrR<br>cape rock hyrax<br>house mouse<br></p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: "http://localhost:8000/listSpecies?limit=4"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>List of Species</h1>
+  <p>house mouse<br>human<br>domestic guinea pig<br>house mouse<br></p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: "http://localhost:8000/listSpecies?limit=hey"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>List of Species</h1>
+  <p>Incorrect value in the parameter 'limit'<br>Please introduce an integer number</p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: "http://localhost:8000/listSpecies?limit=700"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>List of Species</h1>
+  <p>Sorry, there are only 199 species in the database, so the limit cannot be above that number</p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+
+
+ENDPOINT = "/karyotype"
+
+    Input: "http://localhost:8000/karyotype?specie=rabbit"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>Karyotype</h1>
+  <p>1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21  X  MT  </p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: "http://localhost:8000/karyotype?specie=zebrafish"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>Karyotype</h1>
+  <p>1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  MT  </p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: "http://localhost:8000/karyotype?specie=mouse"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>Karyotype</h1>
+  <p>1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  X  Y  MT  </p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: "http://localhost:8000/karyotype?specie=hy"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>Karyotype</h1>
+  <p>Sorry, the name you introduced couldn't be found in our database</p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: "http://localhost:8000/karyotype?specie=9867"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>Karyotype</h1>
+  <p>Sorry, the name you introduced couldn't be found in our database</p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: "http://localhost:8000/karyotype?specie=human&g=W"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>Karyotype</h1>
+  <p>Sorry, the name you introduced couldn't be found in our database</p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+
+ENDPOINT = "/chromosomeLength"
+
+    Input: "http://localhost:8000/chromosomeLength?specie=human&chromo=9"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>Chromosome length</h1>
+  <p>The length of the chromosome 9 of the human species is 138394717</p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: "http://localhost:8000/chromosomeLength?specie=mouse&chromo=18"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>Chromosome length</h1>
+  <p>The length of the chromosome 18 of the mouse species is 90702639</p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: "http://localhost:8000/chromosomeLength?specie=human&chromo=thanos"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>Chromosome length</h1>
+  <p>Sorry, the data you introduced cannot be found in the database</p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: "http://localhost:8000/chromosomeLength?specie=R2D2&chromo=10"
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>Chromosome length</h1>
+  <p>Sorry, the data you introduced cannot be found in the database</p>
+  <a href="/">Main page</a>
+</body>
+</html>
+
+    Input: http://localhost:8000/chromosomeLength?specie=IWant%3F&chromo=to%3Dsleep
+    Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Response</title>
+</head>
+<body style="margin-left:50px;background-color:#B7BAFF">
+  <h1>Chromosome length</h1>
+  <p>Sorry, the data you introduced cannot be found in the database</p>
+  <a href="/">Main page</a>
+</body>
+</html>
+

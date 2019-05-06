@@ -149,7 +149,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             d = open('output.html', 'r')
             contents = d.read()
 
-        elif path.startswith("/geneInfo"):              # ME FALTA PONER EL LENGTH
+        elif path.startswith("/geneInfo"):
             f = open('output.html', 'w')
             genename = pathlist[1]
             h = "Human gene information"

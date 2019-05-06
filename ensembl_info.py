@@ -46,6 +46,7 @@ def get_karyotype(object):
 
     return info_kar
 
+
 def get_chlength(object1, object2):
     conn = http.client.HTTPSConnection(HOSTNAME)
 
@@ -76,6 +77,7 @@ def get_chlength(object1, object2):
     else:
         return 'Error'
 
+
 def get_geneid(name):
     conn = http.client.HTTPSConnection(HOSTNAME)
     endpoint = "/homology/symbol/human/" + name + "?content-type=application/json"
@@ -95,6 +97,7 @@ def get_geneid(name):
         geneid = "Error"
 
     return geneid
+
 
 def get_geneSeq(id):
     conn = http.client.HTTPSConnection(HOSTNAME)
@@ -117,6 +120,7 @@ def get_geneSeq(id):
         newseq += x + '\n'"""
 
     return seq
+
 
 def get_geneInfo(id):
     conn = http.client.HTTPSConnection(HOSTNAME)
@@ -141,6 +145,7 @@ def get_geneInfo(id):
 
     return dd
 
+
 def get_names(chromo, start, end):
     conn = http.client.HTTPSConnection(HOSTNAME)
     endpoint = '/overlap/region/human/{}:{}-{}?feature=gene;content-type=application/json'.format(chromo, start, end)
@@ -155,9 +160,9 @@ def get_names(chromo, start, end):
 
     names = []
 
-    for gene in genenames:
-        names.append(gene['external_name'])
-
-    return names
-
-
+    try:
+        for gene in genenames:
+            names.append(gene['external_name'])
+        return names
+    except TypeError:
+        return "Error"

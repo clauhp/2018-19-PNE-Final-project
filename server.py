@@ -5,7 +5,8 @@ import termcolor
 from ensembl_info import speciesnames, get_karyotype, get_chlength, get_geneid, get_geneSeq, get_geneInfo, get_names
 from Seq_calc import Seq
 
-PORT = 8000                      # CHANGE PROT CHANGE PORT TO 8000
+PORT = 8000
+socketserver.TCPServer.allow_reuse_address = True
 
 HOSTNAME = 'rest.ensembl.org'
 ENDPOINTS = ['/info/species', '/info/assembly']
@@ -17,7 +18,7 @@ htmlfile = """<!DOCTYPE html>
   <meta charset="utf-8">
   <title>Response</title>
 </head>
-<body style="margin-left:50px">
+<body style="margin-left:50px;background-color:#B7BAFF">
   <h1>{}</h1>
   <p>{}</p>
   <a href="/">Main page</a>
@@ -36,6 +37,8 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         contents = ""
         out = ""
         pathlist = path.split('=')
+        common, search = speciesnames()
+        check = dict(zip(common, search))
 
         if path == "/":
             f = open("mainpage.html", 'r')
@@ -43,17 +46,28 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         elif path.startswith("/listSpecies"):
             f = open('output.html', 'w')
-            limit = int(pathlist[1])
             common_name, search_name = speciesnames()
             h = "List of Species"
+            limit = pathlist[1]
 
-            if len(pathlist) == 2:                         # AQUI HAY ALGO QUE NO CHUTA
-                common_name = common_name[:limit]
+            try:
+                limit = int(limit)
+            except ValueError:
+                if limit == "":      # This is for when there is no limit
+                    limit = len(common_name)
+                else:
+                    limit = 'Error'  # This prevents the program form collapsing if a non-integer character is introduced
+
+            if limit == 'Error':
+                out = "Incorrect value in the parameter 'limit'.<br>Please introduce an integer number"
+            elif limit > 199:
+                out = "Sorry, there are only 199 species in the database, so the limit cannot be above that number"
+
             else:
-                pass
+                common_name = common_name[:limit]
 
-            for i in range(len(common_name)):
-                out += common_name[i] + "<br>"
+                for i in range(len(common_name)):
+                    out += common_name[i] + "<br>"
 
             output = htmlfile.format(h, out)
 
@@ -66,11 +80,14 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             f = open('output.html', 'w')
 
             msg = pathlist[1]
-            karyotype = get_karyotype(msg)
             h = "Karyotype"
 
-            for i in range(len(karyotype)):
-                out += karyotype[i] + ', '              # THERE IS A FUCKING COMMA I CANNOT GET RID OF
+            try:
+                karyotype = get_karyotype(msg)
+                for i in range(len(karyotype)):
+                    out += karyotype[i] + '  '              # THERE IS A FUCKING COMMA I CANNOT GET RID OF
+            except KeyError:
+                out = "Sorry, the name you introduced couldn't be found in our database"
 
             output = htmlfile.format(h, out)
 
@@ -79,18 +96,21 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             d = open('output.html', 'r')
             contents = d.read()
 
-        elif path.startswith("/chromosomeLength"):          # DONE
+        elif path.startswith("/chromosomeLength"):
             f = open('output.html', 'w')
 
             msg1 = pathlist[1].split('&')[0]
             msg2 = pathlist[2]
             h = "Chromosome length"
-            common, search = speciesnames()
-            check = dict(zip(common, search))
-            if msg1 in check.values() and msg2 in get_karyotype(msg1):
+
+            try:
                 chr_length = get_chlength(msg1, msg2)
-                out = "The length of the chromosome {} of the {} species is {}".format(msg2, msg1, chr_length)
-            else:
+
+                if chr_length == "Error":
+                    out = "Sorry, the data you introduced cannot be found in the database"
+                else:
+                    out = "The length of the chromosome {} of the {} species is {}".format(msg2, msg1, chr_length)
+            except KeyError:
                 out = "Sorry, the data you introduced cannot be found in the database"
 
             output = htmlfile.format(h, out)

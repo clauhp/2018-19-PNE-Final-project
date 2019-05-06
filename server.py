@@ -76,7 +76,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             d = open('output.html', 'r')
             contents = d.read()
 
-        elif path.startswith("/karyotype"):             # I NEED TO DO SOMETHING WITH THE ERRORS
+        elif path.startswith("/karyotype"):
             f = open('output.html', 'w')
 
             msg = pathlist[1]
@@ -85,7 +85,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             try:
                 karyotype = get_karyotype(msg)
                 for i in range(len(karyotype)):
-                    out += karyotype[i] + '  '              # THERE IS A FUCKING COMMA I CANNOT GET RID OF
+                    out += karyotype[i] + '  '
             except KeyError:
                 out = "Sorry, the name you introduced couldn't be found in our database"
 
@@ -120,7 +120,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             d = open('output.html', 'r')
             contents = d.read()
 
-        elif path.startswith("/geneSeq"):           # INTENTAR JUNTAR geneSEQ Y geneINFO PARA QUE OCUPE MENOS
+        elif path.startswith("/geneSeq"):
             f = open('output.html', 'w')
             genename = pathlist[1]
             h = "Human gene sequence"
@@ -169,7 +169,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             d = open('output.html', 'r')
             contents = d.read()
 
-        elif path.startswith("/geneCalc"):          # ME FALTA PONER EL LENGTH
+        elif path.startswith("/geneCalc"):
             f = open('output.html', 'w')
             genename = pathlist[1]
             h = "Human gene information"
@@ -213,7 +213,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 if len(list_names) == 0:
                     out = "Sorry, there were no genes found in that area"
                 else:
-                    for i in range(len(list_names)):
+                    for i in range(len(list_names)):        # With this it will appear with bullet points
                         out1 += "<li>" + list_names[i] + "</li>"
                     out = "This is the list of gene names in that area: <ul>{}</ul>".format(out1)
             else:

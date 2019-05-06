@@ -2,7 +2,6 @@
 
 ENDPOINT = "/"
 
-
     Input: "http://localhost:8000/"
     Output: <!DOCTYPE html>
 <html lang="en">
